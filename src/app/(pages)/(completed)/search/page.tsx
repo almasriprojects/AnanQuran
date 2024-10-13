@@ -9,7 +9,7 @@ import QuranSearchAndExport from "@/components/SearchandExport/QuranSearchAndExp
 import { VerseData, QuranDataType, ChapterInfo } from "@/app/types/QuranTypes";
 import QuranData from "@/app/data/DB_Quran_New.json";
 
-const QuranDataTyped = QuranData as QuranDataType;
+const QuranDataTyped = QuranData as unknown as QuranDataType;
 
 export default function CompleteQuranPage() {
   const { isLoaded, isSignedIn } = useAuth();

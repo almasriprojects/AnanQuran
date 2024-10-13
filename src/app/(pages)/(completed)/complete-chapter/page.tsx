@@ -11,7 +11,8 @@ import ChapterDropdown from "@/components/DropdownMenu/ChapterDropdown";
 import { VerseData, QuranDataType } from "@/app/types/QuranTypes";
 import QuranData from "@/app/data/DB_Quran_New.json";
 
-const QuranDataTyped = QuranData as QuranDataType;
+// Cast the JSON data to the defined TypeScript type
+const QuranDataTyped = QuranData as unknown as QuranDataType;
 
 export default function CompleteChapterPage() {
   const { isLoaded, isSignedIn } = useAuth();
@@ -23,28 +24,34 @@ export default function CompleteChapterPage() {
   const [chapterData, setChapterData] = useState<VerseData[]>([]);
   const [chapterName, setChapterName] = useState<string>("");
 
+  // Redirect if not signed in
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
       router.push("/");
     }
   }, [isLoaded, isSignedIn, router]);
 
+  // Update chapter data when selectedChapter changes
   useEffect(() => {
     const chapterInfo = QuranDataTyped[selectedChapter];
+
     if (chapterInfo) {
       const verses = Object.values(chapterInfo.Verses).map(verse => ({
         ...verse,
         Chapter_Name_AR: chapterInfo.Chapter_Name_AR,
-        Chapter_Number: selectedChapter
+        Chapter_Number: selectedChapter,
       }));
+
       setChapterData(verses);
       setChapterName(chapterInfo.Chapter_Name_EN);
     }
   }, [selectedChapter]);
 
+  // Filter chapter data based on the search term
   const filteredData = chapterData.filter(
-    item => item.Verse_Text_1.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.Verse_Text_2.toLowerCase().includes(searchTerm.toLowerCase())
+    (item) =>
+      item.Verse_Text_1?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.Verse_Text_2?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const pageCount = Math.ceil(filteredData.length / rowsPerPage);
