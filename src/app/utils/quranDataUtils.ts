@@ -1,21 +1,61 @@
-import { QuranDataType, ChapterInfo, VerseData } from "@/app/types/QuranTypes";
+import { QuranDataType, ChapterInfo, VerseData, WordData } from "@/app/types/QuranTypes";
 import QuranData from "@/app/data/DB_Quran_New.json";
 
 // Export VerseData type
 export type { VerseData } from "@/app/types/QuranTypes";
 
-// Define a type for the raw data structure
+// Define a type for the raw verse data structure
+interface RawVerseData {
+  Master_location: number;
+  Verse_Section: number;
+  Verse_Page: number;
+  Verse_Chapter: number;
+  Verse_Number: number;
+  Verse_Location: string;
+  Verse_Text_1: string;
+  Verse_Text_2: string;
+  Verse_Text_3: string;
+  Verse_Text_4: string;
+  Verse_Total_Word: number;
+  Verse_Total_Letter: number;
+  Words: Record<string, unknown>;
+}
+
+// Define a type for the raw chapter data structure
+interface RawChapterData {
+  Chapter_Name_AR: string;
+  Chapter_Name_EN: string;
+  Chapter_Total_Verses: number;
+  Chapter_Total_Words: number;
+  Chapter_Total_Letters: number;
+  Verses: Record<string, RawVerseData>;
+}
+
+// Define a type for the raw Quran data structure
 interface RawQuranData {
-  [key: string]: Omit<ChapterInfo, 'Chapter_Number'>;
+  [key: string]: RawChapterData;
 }
 
 // Function to transform imported data to match QuranDataType
 function transformQuranData(data: RawQuranData): QuranDataType {
   const transformedData: QuranDataType = {};
   Object.entries(data).forEach(([chapterNumber, chapterData]) => {
+    const transformedVerses: Record<string, VerseData> = {};
+    Object.entries(chapterData.Verses).forEach(([verseKey, verseData]) => {
+      transformedVerses[verseKey] = {
+        ...verseData,
+        Chapter_Name_AR: chapterData.Chapter_Name_AR,
+        Chapter_Number: parseInt(chapterNumber),
+        Words: Object.fromEntries(
+          Object.entries(verseData.Words).map(([key, value]) => [key, value as WordData])
+        ),
+      };
+    });
+
     transformedData[parseInt(chapterNumber)] = {
       ...chapterData,
       Chapter_Number: parseInt(chapterNumber),
+      Verses: transformedVerses,
     };
   });
   return transformedData;
