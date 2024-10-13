@@ -4,19 +4,24 @@ import QuranData from "@/app/data/DB_Quran_New.json";
 // Export VerseData type
 export type { VerseData } from "@/app/types/QuranTypes";
 
+// Define a type for the raw data structure
+interface RawQuranData {
+  [key: string]: Omit<ChapterInfo, 'Chapter_Number'>;
+}
+
 // Function to transform imported data to match QuranDataType
-function transformQuranData(data: Record<string, ChapterInfo>): QuranDataType {
+function transformQuranData(data: RawQuranData): QuranDataType {
   const transformedData: QuranDataType = {};
-  Object.entries(data).forEach(([chapterNumber, chapterData]: [string, ChapterInfo]) => {
+  Object.entries(data).forEach(([chapterNumber, chapterData]) => {
     transformedData[parseInt(chapterNumber)] = {
       ...chapterData,
       Chapter_Number: parseInt(chapterNumber),
-    } as ChapterInfo;
+    };
   });
   return transformedData;
 }
 
-const quranData: QuranDataType = transformQuranData(QuranData as Record<string, ChapterInfo>);
+const quranData: QuranDataType = transformQuranData(QuranData as RawQuranData);
 
 export interface ChapterOccurrence {
   chapterNumber: number;
