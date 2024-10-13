@@ -17,8 +17,8 @@ export interface VerseData {
   Verse_Location: string;
   Verse_Text_1: string;
   Verse_Text_2: string;
-  Verse_Text_3: string;
-  Verse_Text_4: string;
+  Verse_Text_3?: string; // Marked as optional since it may be missing
+  Verse_Text_4?: string; // Marked as optional since it may be missing
   Verse_Total_Word: number;
   Verse_Total_Letter: number;
   Words: {
@@ -27,7 +27,7 @@ export interface VerseData {
 }
 
 export interface ChapterInfo {
-  Chapter_Number: number;
+  Chapter_Number: number; // This is expected to be added dynamically during transformation
   Chapter_Name_AR: string;
   Chapter_Name_EN: string;
   Chapter_Total_Verses: number;

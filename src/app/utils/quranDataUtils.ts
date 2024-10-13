@@ -131,11 +131,11 @@ export const searchVerseEnds = (phrase: string): VerseEndResult[] => {
 };
 
 export const getChapter = (chapterNumber: number): ChapterInfo | undefined => {
-  return quranData[chapterNumber];
+  return quranData[chapterNumber.toString()];
 };
 
 export const getVerse = (chapterNumber: number, verseKey: string): VerseData | undefined => {
-  const chapter = quranData[chapterNumber];
+  const chapter = quranData[chapterNumber.toString()];
   return chapter?.Verses[verseKey] as VerseData;
 };
 
@@ -167,12 +167,12 @@ export const searchVersesByText = (searchText: string): VerseData[] => {
 // New functions for Verse Range functionality
 
 export const getChapterVerseCount = (chapterNumber: number): number => {
-  const chapter = quranData[chapterNumber];
+  const chapter = quranData[chapterNumber.toString()];
   return chapter ? Object.keys(chapter.Verses).length : 0;
 };
 
 export const getVersesFromRange = (chapterNumber: number, startVerse: number, endVerse: number): VerseData[] => {
-  const chapter = quranData[chapterNumber];
+  const chapter = quranData[chapterNumber.toString()];
   if (!chapter) return [];
 
   const verses: VerseData[] = [];
